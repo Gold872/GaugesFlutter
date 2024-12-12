@@ -16,7 +16,9 @@ class RenderLinearGaugeShapePointer extends RenderOpacity {
     required double width,
     required PointerShape shape,
     required bool showLabel,
+    required VoidCallback? onChangeStart,
     required ValueChanged<double>? onChanged,
+    required VoidCallback? onChangeEnd,
     required QuarterTurns quarterTurns,
     required TextStyle labelStyle,
     required PointerPosition pointerPosition,
@@ -29,7 +31,9 @@ class RenderLinearGaugeShapePointer extends RenderOpacity {
     required LinearGauge linearGauge,
   })  : _value = value,
         _height = height,
+        _onChangeStart = onChangeStart,
         _onChanged = onChanged,
+        _onChangeEnd = onChangeEnd,
         _color = color,
         _width = width,
         _shape = shape,
@@ -68,6 +72,16 @@ class RenderLinearGaugeShapePointer extends RenderOpacity {
     markNeedsPaint();
   }
 
+  /// Gets and sets the onChangeStart assigned to [RenderLinearPointerBase]
+  VoidCallback? get onChangeStart => _onChangeStart;
+  VoidCallback? _onChangeStart;
+  set onChangeStart(VoidCallback? value) {
+    if (value == _onChangeStart) {
+      return;
+    }
+    _onChangeStart = value;
+  }
+
   /// Gets and sets the onChanged assigned to [RenderLinearPointerBase].
   ValueChanged<double>? get onChanged => _onChanged;
   ValueChanged<double>? _onChanged;
@@ -76,6 +90,16 @@ class RenderLinearGaugeShapePointer extends RenderOpacity {
       return;
     }
     _onChanged = value;
+  }
+
+  /// Gets and sets the onChangeEnd assigned to [RenderLinearPointerBase]
+  VoidCallback? get onChangeEnd => _onChangeEnd;
+  VoidCallback? _onChangeEnd;
+  set onChangeEnd(VoidCallback? value) {
+    if (value == _onChangeEnd) {
+      return;
+    }
+    _onChangeEnd = value;
   }
 
   /// Gets the orientation to [RenderLinearGaugeShapePointer].
