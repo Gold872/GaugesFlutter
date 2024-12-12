@@ -35,7 +35,9 @@ class WidgetPointer extends SingleChildRenderObjectWidget
     this.animationType = Curves.ease,
     this.enableAnimation = true,
     this.isInteractive = false,
+    this.onChangeStart,
     this.onChanged,
+    this.onChangeEnd,
     required Widget child,
   }) : super(key: key, child: child);
 
@@ -61,9 +63,21 @@ class WidgetPointer extends SingleChildRenderObjectWidget
 
   ///
   /// onChanged is a  callback function that will be invoked when a `pointer`
+  /// value starts to get dragged.
+  ///
+  final VoidCallback? onChangeStart;
+
+  ///
+  /// onChanged is a  callback function that will be invoked when a `pointer`
   /// value is changed.
   ///
   final ValueChanged<double>? onChanged;
+
+  ///
+  /// onChanged is a  callback function that will be invoked when a `pointer`
+  /// value stops getting dragged.
+  ///
+  final VoidCallback? onChangeEnd;
 
   ///
   /// Pointer Alignment on the [LinearGauge]  sets the alignment of `pointer` on the [LinearGauge]
@@ -149,7 +163,9 @@ class WidgetPointer extends SingleChildRenderObjectWidget
         animationType: animationType,
         isInteractive: isInteractive,
         enableAnimation: enableAnimation,
+        onChangeStart: onChangeStart,
         onChanged: onChanged,
+        onChangeEnd: onChangeEnd,
         pointerAnimation: linearGaugeScope.animation!,
         linearGauge: linearGaugeScope.lGauge);
   }

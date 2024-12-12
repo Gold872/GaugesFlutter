@@ -14,13 +14,17 @@ class RenderLinearGaugeWidgetPointer extends RenderProxyBox {
     required Curve animationType,
     required bool enableAnimation,
     required Animation<double> pointerAnimation,
+    required VoidCallback? onChangeStart,
     required ValueChanged<double>? onChanged,
+    required VoidCallback? onChangeEnd,
     required bool isInteractive,
     required LinearGauge linearGauge,
   })  : _value = value,
         _pointerAlignment = pointerAlignment,
         _pointerPosition = pointerPosition,
+        _onChangeStart = onChangeStart,
         _onChanged = onChanged,
+        _onChangeEnd = onChangeEnd,
         _linearGauge = linearGauge,
         _isInteractive = isInteractive,
         _pointerAnimation = pointerAnimation,
@@ -109,6 +113,16 @@ class RenderLinearGaugeWidgetPointer extends RenderProxyBox {
     markNeedsPaint();
   }
 
+  /// Gets and sets the onChangeStart assigned to [RenderLinearPointerBase]
+  VoidCallback? get onChangeStart => _onChangeStart;
+  VoidCallback? _onChangeStart;
+  set onChangeStart(VoidCallback? value) {
+    if (value == _onChangeStart) {
+      return;
+    }
+    _onChangeStart = value;
+  }
+
   /// Gets and sets the onChanged assigned to [RenderLinearPointerBase].
   ValueChanged<double>? get onChanged => _onChanged;
   ValueChanged<double>? _onChanged;
@@ -117,6 +131,16 @@ class RenderLinearGaugeWidgetPointer extends RenderProxyBox {
       return;
     }
     _onChanged = value;
+  }
+
+  /// Gets and sets the onChangeEnd assigned to [RenderLinearPointerBase]
+  VoidCallback? get onChangeEnd => _onChangeEnd;
+  VoidCallback? _onChangeEnd;
+  set onChangeEnd(VoidCallback? value) {
+    if (value == _onChangeEnd) {
+      return;
+    }
+    _onChangeEnd = value;
   }
 
   /// Gets the pointerAlignment assigned to [RenderLinearGaugeWidgetPointer].

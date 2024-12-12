@@ -1168,8 +1168,8 @@ class RenderLinearGauge extends RenderBox
       restrictPointerChange = true;
       restrictWidgetPointerChange = true;
     } else if (event is PointerUpEvent) {
-      restrictPointerChange = true;
-      restrictWidgetPointerChange = true;
+      restrictPointerChange = false;
+      restrictWidgetPointerChange = false;
     }
 
     super.handleEvent(event, entry);
@@ -2196,14 +2196,21 @@ class RenderLinearGauge extends RenderBox
   void _handleDragStart(DragStartDetails details) {
     if (_pointerType is RenderLinearGaugeWidgetPointer) {
       _movableWidget.setIsInteractive = true;
+      _movableWidget.onChangeStart?.call();
     } else if (_pointerType is RenderLinearGaugeShapePointer) {
       _movablePointer.setIsInteractive = true;
+      _movablePointer.onChangeStart?.call();
     }
     markNeedsLayout();
     markNeedsSemanticsUpdate();
   }
 
   void _handleDragEnd(DragEndDetails details) {
+    if (_pointerType is RenderLinearGaugeWidgetPointer) {
+      _movableWidget.onChangeEnd?.call();
+    } else if (_pointerType is RenderLinearGaugeShapePointer) {
+      _movablePointer.onChangeEnd?.call();
+    }
     restrictPointerChange = false;
     restrictWidgetPointerChange = false;
     _horizontalDrag.dispose();

@@ -32,7 +32,9 @@ class Pointer extends LeafRenderObjectWidget implements BasePointer {
     required this.shape,
     this.showLabel = false,
     this.isInteractive = false,
+    this.onChangeStart,
     this.onChanged,
+    this.onChangeEnd,
     this.quarterTurns = QuarterTurns.zero,
     this.labelStyle = const TextStyle(),
     this.pointerPosition = PointerPosition.center,
@@ -170,7 +172,24 @@ class Pointer extends LeafRenderObjectWidget implements BasePointer {
   /// ),
   /// ```
   final TextStyle labelStyle;
+
+  ///
+  /// onChanged is a  callback function that will be invoked when a `pointer`
+  /// value starts to get dragged.
+  ///
+  final VoidCallback? onChangeStart;
+
+  ///
+  /// onChanged is a  callback function that will be invoked when a `pointer`
+  /// value is changed.
+  ///
   final ValueChanged<double>? onChanged;
+
+  ///
+  /// onChanged is a  callback function that will be invoked when a `pointer`
+  /// value stops getting dragged.
+  ///
+  final VoidCallback? onChangeEnd;
 
   ///
   /// Pointer Position on the [LinearGauge]  sets the position of `pointer` on the [LinearGauge]
@@ -264,7 +283,9 @@ class Pointer extends LeafRenderObjectWidget implements BasePointer {
         quarterTurns: quarterTurns,
         enableAnimation: enableAnimation,
         labelStyle: labelStyle,
+        onChangeStart: onChangeStart,
         onChanged: onChanged,
+        onChangeEnd: onChangeEnd,
         pointerAnimation: linearGaugeScope.animation!,
         linearGauge: linearGaugeScope.lGauge);
   }
