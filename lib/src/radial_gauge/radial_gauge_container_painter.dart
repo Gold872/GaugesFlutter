@@ -32,7 +32,7 @@ class RenderRadialGaugeContainer extends RenderBox {
 
   void paintRulersAndLabels(
     Canvas canvas,
-    double numParts,
+    int steps,
     double startAngle,
     double partAngle,
     double radius,
@@ -59,7 +59,7 @@ class RenderRadialGaugeContainer extends RenderBox {
         (double value) => ((value * 10).round() / 10).toString();
 
     // Loop to draw the Rulers and Labels
-    for (int i = 0; i <= numParts; i++) {
+    for (int i = 0; i <= steps; i++) {
       double rulerOffset = getRadialGauge.track.trackStyle.rulersOffset ?? 0;
       final double angle =
           startAngle + i * partAngle; // angle of the current part
@@ -89,7 +89,7 @@ class RenderRadialGaugeContainer extends RenderBox {
         canvas.drawLine(
             center + startPoint, center + endPoint, primaryRulerPaint);
       }
-      if (i != numParts) {
+      if (i != steps) {
         for (int j = 1; j <= secondaryRulerInterval; j++) {
           final double secondaryAngle = angle + (j * secondaryRulerAngle);
           final Offset secondaryStartPoint = Offset(
@@ -142,7 +142,7 @@ class RenderRadialGaugeContainer extends RenderBox {
       }
 
       // Check if it's the last label and showLastLabel is false
-      if (i == numParts && !showLastLabel) {
+      if (i == steps && !showLastLabel) {
         continue; // Skip drawing the last label
       }
 
@@ -155,11 +155,10 @@ class RenderRadialGaugeContainer extends RenderBox {
     }
   }
 
-  int calculateNumOfDivisions(int steps, double start, double end) {
-    double range = end - start.toDouble();
-    int divisions = 2 * steps ~/ range;
+  double calculateAnglePerDivision(int steps, double start, double end) {
+    double range = end - start;
 
-    return divisions.clamp(1, double.maxFinite.toInt());
+    return (range / steps) * pi / 180;
   }
 
   @override
@@ -187,15 +186,14 @@ class RenderRadialGaugeContainer extends RenderBox {
     double labelOffset = getRadialGauge.track.trackStyle.labelOffset ?? 0;
     double arcLength = endAngle - startAngle; // length of the arc in radians
 
-    double numParts = calculateNumOfDivisions(
+    double divisionStep = calculateAnglePerDivision(
       getRadialGauge.track.steps,
-      getRadialGauge.track.start,
-      getRadialGauge.track.end,
-    ).toDouble();
+      getRadialGauge.track.startAngle,
+      getRadialGauge.track.endAngle,
+    );
 
     // double radialOffset = getRadialGauge.valueBar!.first.radialOffset;
 
-    double partAngle = arcLength / numParts; // angle of each part in radians
     double radius = (shortestSide / 2 - thickness) *
         getRadialGauge.radiusFactor; // radius of the arc
 
@@ -222,7 +220,7 @@ class RenderRadialGaugeContainer extends RenderBox {
     }
 
     // Drawing the Rulers and Labels
-    paintRulersAndLabels(canvas, numParts, startAngle, partAngle, radius,
-        thickness, rulerLength, labelOffset, center);
+    paintRulersAndLabels(canvas, getRadialGauge.track.steps, startAngle,
+        divisionStep, radius, thickness, rulerLength, labelOffset, center);
   }
 }
