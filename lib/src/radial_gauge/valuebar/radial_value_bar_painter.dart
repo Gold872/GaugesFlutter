@@ -107,7 +107,7 @@ class RenderRadialValueBar extends RenderBox {
 
     final Paint containerPaint = Paint()
       ..color = _color
-      ..strokeCap = StrokeCap.round
+      ..strokeCap = StrokeCap.butt
       ..strokeWidth = _valueBarThickness
       ..shader = gradient.createShader(
           Rect.fromCircle(center: center, radius: size.shortestSide / 2.0))
