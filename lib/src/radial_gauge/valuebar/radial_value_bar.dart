@@ -36,6 +36,7 @@ class RadialValueBar extends LeafRenderObjectWidget {
     this.valueBarThickness = 10,
     this.gradient,
     this.radialOffset = 0,
+    this.startPosition,
   }) : super(key: key);
 
   /// [value] denotes the value of the value bar.
@@ -98,6 +99,28 @@ class RadialValueBar extends LeafRenderObjectWidget {
   ///
   final double radialOffset;
 
+  /// [startPosition] denotes which value to start the value bar at.
+  /// The value bar will start at the given position.
+  ///
+  /// ```dart
+  /// RadialGauge(
+  ///         valueBar: [
+  ///           RadialValueBar(
+  ///             value: 50,
+  ///             color: Colors.blue
+  ///             zeroPosition: 10,
+  ///           ),
+  ///         ],
+  ///         track: RadialTrack(
+  ///           start: 0,
+  ///           end: 100,
+  ///
+  ///         ),
+  ///       ),
+  /// ```
+  ///
+  final double? startPosition;
+
   /// [valueBarThickness] denotes the thickness of the value bar.
   /// The value bar will be rendered at the given thickness.
   ///
@@ -132,6 +155,7 @@ class RadialValueBar extends LeafRenderObjectWidget {
       color: color,
       gradient: gradient ?? LinearGradient(colors: [color, color]),
       radialOffset: radialOffset,
+      startPosition: startPosition,
       valueBarThickness: valueBarThickness,
       radialGauge: scope.rGauge,
     );
@@ -145,6 +169,7 @@ class RadialValueBar extends LeafRenderObjectWidget {
       ..setValue = value
       ..setColor = color
       ..setRadialOffset = radialOffset
+      ..setStartPosition = startPosition
       ..setLinearGradient = gradient ?? LinearGradient(colors: [color, color])
       ..setValueBarThickness = valueBarThickness
       ..setRadialGauge = scope.rGauge;

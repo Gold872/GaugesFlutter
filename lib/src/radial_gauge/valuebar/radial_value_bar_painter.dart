@@ -11,10 +11,12 @@ class RenderRadialValueBar extends RenderBox {
     required double valueBarThickness,
     required RadialGauge radialGauge,
     required double radialOffset,
+    required double? startPosition,
   })  : _value = value,
         _color = color,
         _gradient = gradient!,
         _radialOffset = radialOffset,
+        _startPosition = startPosition,
         _radialGauge = radialGauge,
         _valueBarThickness = valueBarThickness,
         super();
@@ -48,6 +50,14 @@ class RenderRadialValueBar extends RenderBox {
   set setRadialOffset(double radialOffset) {
     if (_radialOffset == radialOffset) return;
     _radialOffset = radialOffset;
+    markNeedsPaint();
+  }
+
+  double? get getStartPosition => _startPosition;
+  double? _startPosition;
+  set setStartPosition(double? startPosition) {
+    if (_startPosition == startPosition) return;
+    _startPosition = startPosition;
     markNeedsPaint();
   }
 
@@ -88,13 +98,25 @@ class RenderRadialValueBar extends RenderBox {
     final center = offset;
     final LinearGradient gradient = getLinearGradient;
 
+    double startDegrees = getRadialGauge.track.startAngle;
+    if (getStartPosition != null) {
+      double startValueAngle =
+          (getStartPosition! - getRadialGauge.track.start) *
+                  (getRadialGauge.track.endAngle -
+                      getRadialGauge.track.startAngle) /
+                  (getRadialGauge.track.end - getRadialGauge.track.start) +
+              getRadialGauge.track.startAngle;
+      startDegrees = startValueAngle;
+    }
+
+    double startValue = getStartPosition ?? getRadialGauge.track.start;
+
     // Angles in radians
-    double startAngle = (getRadialGauge.track.startAngle - 180) * (pi / 180);
+    double startAngle = (startDegrees - 180) * (pi / 180);
     double endAngle = (getRadialGauge.track.endAngle - 180) * (pi / 180);
 
-    double value = (_value - getRadialGauge.track.start) /
-        (getRadialGauge.track.end - getRadialGauge.track.start) *
-        100;
+    double value =
+        (_value - startValue) / (getRadialGauge.track.end - startValue) * 100;
 
     final double angle = startAngle + (value / 100) * (endAngle - startAngle);
     endAngle = angle;
