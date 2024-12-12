@@ -38,6 +38,7 @@ class RenderRadialGaugeContainer extends RenderBox {
     double radius,
     double thickness,
     double rulerLength,
+    double labelOffsetLength,
     Offset center,
   ) {
     bool showFirstLabel = getRadialGauge.track.trackStyle.showFirstLabel;
@@ -70,8 +71,10 @@ class RenderRadialGaugeContainer extends RenderBox {
           ((radius - thickness - rulerOffset) - rulerLength) * sin(angle));
 
       final Offset labelEndPoint = Offset(
-          (radius - rulerLength - 20 - thickness) * cos(angle),
-          (radius - rulerLength - 20 - thickness) * sin(angle));
+          (radius - rulerLength - labelOffsetLength - 20 - thickness) *
+              cos(angle),
+          (radius - rulerLength - labelOffsetLength - 20 - thickness) *
+              sin(angle));
 
       var secondaryRulerInterval =
           getRadialGauge.track.trackStyle.secondaryRulerPerInterval ?? 1;
@@ -154,9 +157,9 @@ class RenderRadialGaugeContainer extends RenderBox {
 
   int calculateNumOfDivisions(int steps, double start, double end) {
     double range = end - start.toDouble();
-    int numOfDivisions = range ~/ steps;
+    int divisions = 2 * steps ~/ range;
 
-    return numOfDivisions;
+    return divisions.clamp(1, double.maxFinite.toInt());
   }
 
   @override
@@ -181,6 +184,7 @@ class RenderRadialGaugeContainer extends RenderBox {
 
     double rulerLength =
         getRadialGauge.track.trackStyle.primaryRulersHeight ?? 10;
+    double labelOffset = getRadialGauge.track.trackStyle.labelOffset ?? 0;
     double arcLength = endAngle - startAngle; // length of the arc in radians
 
     double numParts = calculateNumOfDivisions(
@@ -199,7 +203,7 @@ class RenderRadialGaugeContainer extends RenderBox {
 
     final Paint containerPaint = Paint()
       ..color = getRadialGauge.track.color
-      ..strokeCap = StrokeCap.round
+      ..strokeCap = StrokeCap.butt
       ..strokeWidth = thickness
       ..style = PaintingStyle.stroke;
 
@@ -219,6 +223,6 @@ class RenderRadialGaugeContainer extends RenderBox {
 
     // Drawing the Rulers and Labels
     paintRulersAndLabels(canvas, numParts, startAngle, partAngle, radius,
-        thickness, rulerLength, center);
+        thickness, rulerLength, labelOffset, center);
   }
 }
