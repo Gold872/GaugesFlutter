@@ -12,7 +12,8 @@ class RenderNeedlePointer extends RenderBox {
     required ValueChanged<double>? onChanged,
     required double needleHeight,
     required double tailRadius,
-    required double needleWidth,
+    required double needleStartWidth,
+    required double needleEndWidth,
     required NeedleStyle needleStyle,
     required bool isInteractive,
     required Color tailColor,
@@ -29,7 +30,8 @@ class RenderNeedlePointer extends RenderBox {
         _tailColor = tailColor,
         _needleStyle = needleStyle,
         _isInteractive = isInteractive,
-        _needleWidth = needleWidth,
+        _needleStartWidth = needleStartWidth,
+        _needleEndWidth = needleEndWidth,
         super();
 
   LinearGradient get getGradient => _gradient;
@@ -96,11 +98,20 @@ class RenderNeedlePointer extends RenderBox {
     markNeedsLayout();
   }
 
-  double get getNeedleWidth => _needleWidth;
-  double _needleWidth;
-  set setNeedleWidth(double needleWidth) {
-    if (_needleWidth == needleWidth) return;
-    _needleWidth = needleWidth;
+  double get getNeedleStartWidth => _needleStartWidth;
+  double _needleStartWidth;
+  set setNeedleStartWidth(double needleStartWidth) {
+    if (_needleStartWidth == needleStartWidth) return;
+    _needleStartWidth = needleStartWidth;
+    markNeedsPaint();
+    markNeedsLayout();
+  }
+
+  double get getNeedleEndWidth => _needleEndWidth;
+  double _needleEndWidth;
+  set setNeedleEndWidth(double needleEndWidth) {
+    if (_needleStartWidth == needleEndWidth) return;
+    _needleEndWidth = needleEndWidth;
     markNeedsPaint();
     markNeedsLayout();
   }
@@ -167,13 +178,14 @@ class RenderNeedlePointer extends RenderBox {
     final canvas = context.canvas;
     offset = Offset(size.width * getRadialGauge.xCenterCoordinate + offset.dx,
         size.height * getRadialGauge.yCenterCoordinate + offset.dy);
-    final center = Offset(offset.dx + _needleWidth, offset.dy + _needleHeight);
+    final center =
+        Offset(offset.dx + _needleStartWidth, offset.dy + _needleHeight);
 
     Rect circle = Rect.fromLTWH(offset.dx - getTailRadius / 2,
         offset.dy - getTailRadius / 2, _tailRadius, _tailRadius);
     Path circlePath = Path()..addOval(circle);
 
-    double strokeWidth = _needleWidth;
+    double strokeWidth = _needleStartWidth;
 
     LinearGradient gradient = _gradient;
 
@@ -192,10 +204,10 @@ class RenderNeedlePointer extends RenderBox {
     final double angle = startAngle + (value / 100) * (endAngle - startAngle);
 
     double needleEndX =
-        center.dx + needleMultiplier * cos(angle) - _needleWidth;
+        center.dx + needleMultiplier * cos(angle) - _needleStartWidth;
     double needleEndY =
         center.dy + needleMultiplier * sin(angle) - _needleHeight;
-    double needleStartX = center.dx - _needleWidth;
+    double needleStartX = center.dx - _needleStartWidth;
     double needleStartY = center.dy - _needleHeight;
 
     final needlePaint = Paint()
@@ -217,13 +229,22 @@ class RenderNeedlePointer extends RenderBox {
     needlePath.lineTo(needleStartX + getTailRadius / 2 * cos(angle - pi / 2),
         needleStartY - (getTailRadius / 2) * sin(angle + pi / 2));
 
-    double needleWidth = _needleWidth;
+    double needleWidth = _needleStartWidth;
     needlePath.moveTo(offset.dx + needleWidth * cos(angle + pi / 2),
         offset.dy - needleWidth * sin(angle - pi / 2));
     needlePath.lineTo(needleStartX + needleWidth * cos(angle - pi / 2),
         needleStartY - (needleWidth) * sin(angle + pi / 2));
 
-    needlePath.lineTo(needleEndX, needleEndY);
+    double needleEndWidth = _needleEndWidth;
+    needlePath.lineTo(
+      needleEndX - needleEndWidth * cos(angle + pi / 2),
+      needleEndY - needleEndWidth * sin(angle + pi / 2),
+    );
+    needlePath.arcToPoint(
+      Offset(needleEndX + needleEndWidth * cos(angle + pi / 2),
+          needleEndY + needleEndWidth * sin(angle + pi / 2)),
+      radius: Radius.circular(needleEndWidth / 2),
+    );
 
     needlePath.close();
 

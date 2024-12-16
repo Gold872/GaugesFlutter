@@ -38,6 +38,7 @@ class NeedlePointer extends LeafRenderObjectWidget {
       this.color = Colors.red,
       this.tailColor = Colors.red,
       this.needleWidth = 40,
+      this.needleEndWidth = 0,
       this.needleHeight = 300,
       this.onChanged,
       this.isInteractive = false,
@@ -50,6 +51,7 @@ class NeedlePointer extends LeafRenderObjectWidget {
   final Color color;
   final double needleHeight;
   final double needleWidth;
+  final double needleEndWidth;
   final double tailRadius;
   final LinearGradient? gradient;
   final Color tailColor;
@@ -70,7 +72,8 @@ class NeedlePointer extends LeafRenderObjectWidget {
       color: color,
       needleHeight: needleHeight,
       onChanged: onChanged,
-      needleWidth: needleWidth,
+      needleStartWidth: needleWidth,
+      needleEndWidth: needleEndWidth,
       tailRadius: tailRadius,
     );
   }
@@ -89,7 +92,8 @@ class NeedlePointer extends LeafRenderObjectWidget {
       ..setTailRadius = tailRadius
       ..onChanged = onChanged
       ..setNeedleStyle = needleStyle
-      ..setNeedleWidth = needleWidth
+      ..setNeedleStartWidth = needleWidth
+      ..setNeedleEndWidth = needleEndWidth
       ..setRadialGauge = scope.rGauge;
   }
 }
